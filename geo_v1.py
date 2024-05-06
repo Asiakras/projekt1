@@ -75,6 +75,16 @@ class Transformacje:
             raise NotImplementedError(f"{output} - output format not defined")
             
 
+    def plh2xyz(self, phi, lam, h):
+        
+        N = self.a / sqrt((1 - self.ecc2 * sin(phi)**2))
+        
+        X = (N + h) * cos(phi) * cos(lam)
+        Y = (N + h) * cos(phi) * sin(lam)
+        Z = ((N * (1 - self.ecc2)) + h) * sin(phi)
+        
+        return X, Y, Z
+        
 #####definicje transformacji z pliku GW - trzeba będzie je zmienić pod selfy by wpisywały się w model
 
 
