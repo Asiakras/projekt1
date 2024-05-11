@@ -145,79 +145,75 @@ class Transformacje:
         X92 = xgk * m92 - 5300000
         Y92 = ygk * m92 + 500000
         return X92, Y92
-    
-               
-                
-        if '--header_lines' in sys.argv:
-            header_lines = int(sys.argv)
-            
-
-        elif '--xyz2plh' in sys.argv:
-            coords_plh = []
-            with open('wsp_inp.txt','r') as f:
-                lines = f.readlines()
-                lines = lines[4:]
-                for line in lines:
-                    line = line.strip()
-                    x_str, y_str, z_str = line.split(',')
-                    x,y,z = (float(x_str), float(y_str), float(z_str))
-                    phi, lam,h  = geo.xyz2plh(x,y,z)
-                    coords_plh.append([phi, lam ,h])
-                    
-                    
-            with open('result_xyz2plh.txt', 'w') as f:
-                f.write('phi[stopnie], lam[stopnie], h[m]\n')
-                for coords in coords_plh:
-                    line = ','.join([f'{coord:11.3f}' for coord in coords])
-                    f.write(line + '\n')
-        
-        elif '--xyz2neu' in sys.argv:
-            coords_neu = []
-            with open('wsp_inp.txt','r') as f:
-                lines = f.readlines()
-                lines = lines[4:]
-                for line in lines:
-                    line = line.strip()
-                    x,y,z = line.split(',')
-                    x,y,z = (float(x), float(y), float(z))
-                    x0,y0,z0 = [float(coord) for coord in sys.argv[-4:-1]
-                    n,e,u = geo.xyz2neu(x,y,z,x0,y0,z0)
-                    coords_neu.append([n,e,u])
-                    
-                    
-            with open('result_xyz2neu.txt', 'w') as f:
-                f.write('n, e, u\n')
-                for coords in coords_neu:
-                    line = ','.join([f'{coord:11.3f}' for coord in coords])
-                    f.write(line + '\n')
-                
-                
-        elif '--pl21992' in sys.argv:
-            coords_pl1992 = []
-            with open('wsp_inp.txt','r') as f:
-                lines - f.readlines()
-                lines = lines[4:]
-                for line in lines:
-                    line = line.strip()
-                    phi_str, lam_str ,h_str = line.split(',')
-                    phi,lam,h = (float(phi_str), float(lam_str), float(h_str))
-                    f92, l92 = geo.pl2pl1992(phi, lam)
-                    coords_pl1992.append([f92, l92])
-                    
-                    
-            with open('result_pl21992z.txt', 'w') as f:
-                f.write('phi92, lam92\n')
-                for coords in coords_pl1992:
-                    line = ','.join([f'{coord:11.3f}' for coord in coords])
-                    f.write(line + '\n')
-
 if __name__ == "__main__":
-    # utworzenie obiektu
-    geo = Transformacje(model = "wgs84")
-    # dane XYZ geocentryczne
-    X = 3664940.500; Y = 1409153.590; Z = 5009571.170
-    phi, lam, h = geo.xyz2plh(X, Y, Z)
-    print(phi, lam, h)
-    # phi, lam, h = geo.xyz2plh2(X, Y, Z)
-    # print(phi, lam, h)
-        
+    # Checking for command-line arguments
+    if len(sys.argv) < 4:
+        print(" <input_file> <ellipsoid_model> <transformation_function>")
+        sys.exit(1)
+
+    input_file = sys.argv[1]
+    ellipsoid_model = sys.argv[2]
+    transformation_function = sys.argv[3]
+
+    # Creating Transformacje object
+    geo = Transformacje(model=ellipsoid_model)
+
+    # Performing transformation based on the chosen function
+    if transformation_function == 'xyz2plh':
+        coords_plh = []
+        with open(input_file, 'r') as f:
+            lines = f.readlines()
+            lines = lines[4:]
+            for line in lines:
+                line = line.strip()
+                x_str, y_str, z_str = line.split(',')
+                x, y, z = (float(x_str), float(y_str), float(z_str))
+                phi, lam, h = geo.xyz2plh(x, y, z)
+                coords_plh.append([phi, lam, h])
+
+        with open('result_xyz2plh.txt', 'w') as f:
+            f.write('phi[stopnie], lam[stopnie], h[m]\n')
+            for coords in coords_plh:
+                line = ','.join([f'{coord:11.3f}' for coord in coords])
+                f.write(line + '\n')
+
+    elif transformation_function == 'xyz2neu':
+        coords_neu = []
+        with open(input_file, 'r') as f:
+            lines = f.readlines()
+            lines = lines[4:]
+            for line in lines:
+                line = line.strip()
+                x, y, z = line.split(',')
+                x, y, z = (float(x), float(y), float(z))
+                x0, y0, z0 = [float(coord) for coord in sys.argv[-4:-1]]
+                n, e, u = geo.xyz2neu(x, y, z, x0, y0, z0)
+                coords_neu.append([n, e, u])
+
+        with open('result_xyz2neu.txt', 'w') as f:
+            f.write('n, e, u\n')
+            for coords in coords_neu:
+                line = ','.join([f'{coord:11.3f}' for coord in coords])
+                f.write(line + '\n')
+
+    elif transformation_function == 'pl21992':
+        coords_pl1992 = []
+        with open(input_file, 'r') as f:
+            lines = f.readlines()
+            lines = lines[4:]
+            for line in lines:
+                line = line.strip()
+                phi_str, lam_str, h_str = line.split(',')
+                phi, lam, h = (float(phi_str), float(lam_str), float(h_str))
+                f92, l92 = geo.pl21992(phi, lam)
+                coords_pl1992.append([f92, l92])
+
+        with open('result_pl21992z.txt', 'w') as f:
+            f.write('x92, y92\n')
+            for coords in coords_pl1992:
+                line = ','.join([f'{coord:11.3f}' for coord in coords])
+                f.write(line + '\n')
+
+    else:
+        print("Transformation function not recognized.")
+        sys.exit(1)
