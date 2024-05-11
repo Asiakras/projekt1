@@ -104,6 +104,44 @@ class Transformacje:
         dx = R @ dX
         return dx
 
+    def pl21992(self, lat, lon):
+        '''
+        Funkcja zwracająca współrzędne w układzie 1992
+    
+        Parameters
+        ----------
+        lat
+            [stopnie dziesiętne] - szerokość geodezyjna
+        lon
+            [stopnie dziesiętne] - długośc geodezyjna.
+   
+    
+        Returns
+        -------
+        X92, Y92 współrzędne w układzie 1992
+    
+        '''
+        phi = lat*pi/180
+        lam = lon*pi/180
+        A0 = 1 - self.ecc2/4 - (3 * (self.ecc2**2))/64 - (5 * (self.ecc2**3))/256
+        A2 = 3/8 *(self.ecc2 + (self.ecc2**2)/4 + 15 * (self.ecc2**3)/ 128)
+        A4 = 15/256 * (self.ecc2**2 + 3 * (self.ecc2**3)/4)
+        A6 = 35 * (self.ecc2**3)/ 3072
+        sigma = self.a * (A0 * phi - A2 * sin(2*phi) + A4 * sin(4*phi) - A6 * sin(6*phi))
+        l0 = 19*pi/180
+        b2 = self.a**2 * (1 - self.ecc2)
+        e2prim = (self.a**2 - b2)/b2
+        dl = lam - l0
+        t = tan(phi)
+        n2 = e2prim * (cos(phi))**2
+        N = self.a/sqrt(1 - (self.ecc2 * sin(phi)**2))
+        xgk = sigma + (dl**2/2) * N * sin(phi) * cos(phi) * (1 + ((dl**2/12) * cos(phi)**2 * (5 - t**2 + 9*n2 + 4*(n2**2))) + ((dl**4/360) * cos(phi)**4 * (61 - 58 * t**2 + t**4 + 270 * n2 - 330 * n2 * t**2)))
+        ygk = dl * N * cos(phi) * (1 + (dl**2/6) * cos(phi)**2 * (1 - t**2 + n2) + (dl**4/120) * cos(phi)**4 * (5 - 18 * t**2 + t**4 + 14*n2 - 58 * n2 * t**2))
+        m92 = 0.9993
+        X92 = xgk * m92 - 5300000
+        Y92 = ygk * m92 + 500000
+        return X92, Y92
+    
 if __name__ == "__main__":
     # utworzenie obiektu
     geo = Transformacje(model = "wgs84")
@@ -130,7 +168,7 @@ if __name__ == "__main__":
     
     x,y,z = 1, 1, 5009571.170
     x0, y0,z0 = 1, 1, 5009571.170   
-    enu = geo.xyz2neu(z,y,z,x0,y0,z0)
+    enu = geo.xyz2neu(x,y,z,x0,y0,z0)
     print('enu=', enu)
     
     elif '--xyz2neu' in sys.argv:
@@ -147,7 +185,7 @@ if __name__ == "__main__":
                 coords_neu.append([n,e,u])
                 
                 
-        with open('result_plh2xyz.txt', 'w') as f:
+        with open('result_xyz2neu.txt', 'w') as f:
             f.write('x[m], y[m], z[m]\n')
             for coords in coords_xyz:
                 line = ','.join([f'{coord:11.3f}' for coord in coords])
@@ -161,7 +199,7 @@ if __name__ == "__main__":
                 
         coords_plh = []
         with open(wsp_inp.txt) as f:
-            lines - f.readlines()
+            lines = f.readlines()
             lines = lines[4:]
             for line in lines:
                 line = line.strip()
@@ -170,6 +208,84 @@ if __name__ == "__main__":
                 p,l,h =geo.xyz2plh(x,y,z)
                
                 
+        if '--header_lines' in sys.argv:
+            header_lines = int(sys.argv)
+            
+        elif '--xyz2plh' in sys.argv:
+            coords_plh = []
+            with open('wsp_inp.txt','r') as f:
+                lines = f.readlines()
+                lines = lines[4:]
+                for line in lines:
+                    line = line.strip()
+                    x_str, y_str, z_str = line.split(',')
+                    x,y,z = (float(x_str), float(y_str), float(z_str))
+                    phi, lam,h  = geo.xyz2plh(x,y,z)
+                    coords_plh.append([phi, lam ,h])
+                    
+                    
+            with open('result_xyz2plh.txt', 'w') as f:
+                f.write('phi[stopnie], lam[stopnie], h[m]\n')
+                for coords in coords_plh:
+                    line = ','.join([f'{coord:11.3f}' for coord in coords])
+                    f.write(line + '\n')
+                    
+        elif '--xyz2plh' in sys.argv:
+            coords_plh = []
+            with open('wsp_inp.txt','r') as f:
+                lines = f.readlines()
+                lines = lines[4:]
+                for line in lines:
+                    line = line.strip()
+                    x_str, y_str, z_str = line.split(',')
+                    x,y,z = (float(x_str), float(y_str), float(z_str))
+                    phi, lam,h  = geo.xyz2plh(x,y,z)
+                    coords_plh.append([phi, lam ,h])
+                    
+                    
+            with open('result_xyz2plh.txt', 'w') as f:
+                f.write('phi[stopnie], lam[stopnie], h[m]\n')
+                for coords in coords_plh:
+                    line = ','.join([f'{coord:11.3f}' for coord in coords])
+                    f.write(line + '\n')
+        
+        elif '--xyz2neu' in sys.argv:
+            coords_neu = []
+            with open(inp_file_path,'r') as f:
+                lines = f.readlines()
+                lines = lines[4:]
+                for line in lines:
+                    line = line.strip()
+                    x,y,z = line.split(',')
+                    x,y,z = (float(x), float(y), float(z))
+                    x0,y0,z0 = [float(coord) for coord in sys.argv[-4:-1]
+                    n,e,u = geo.xyz2neu(x,y,z,x0,y0,z0)
+                    coords_neu.append([n,e,u])
+                    
+                    
+            with open('result_xyz2neu.txt', 'w') as f:
+                f.write('n, e, u\n')
+                for coords in coords_neu:
+                    line = ','.join([f'{coord:11.3f}' for coord in coords])
+                    f.write(line + '\n')
                 
                 
+        elif '--pl21992' in sys.argv:
+            coords_pl1992 = []
+            with open(inp_file_path,'r') as f:
+                lines - f.readlines()
+                lines = lines[4:]
+                for line in lines:
+                    line = line.strip()
+                    phi_str, lam_str ,h_str = line.split(',')
+                    phi,lam,h = (float(phi_str), float(lam_str), float(h_str))
+                    f92, l92 = geo.pl2pl1992(phi, lam)
+                    coords_pl1992.append([f92, l92])
+                    
+                    
+            with open('result_pl21992z.txt', 'w') as f:
+                f.write('phi92, lam92\n')
+                for coords in coords_pl1992:
+                    line = ','.join([f'{coord:11.3f}' for coord in coords])
+                    f.write(line + '\n')
                 
