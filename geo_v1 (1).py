@@ -78,7 +78,8 @@ class Transformacje:
 
 #####definicje transformacji z pliku GW - trzeba będzie je zmienić pod selfy by wpisywały się w model
 
-    def XYZ2neu(X,Y,Z):
+    
+    def xyz2neu(self, x,y,z,x0,y0,z0):
         '''
         Funkcja zwracająca macierz ij w ukladzie neu wykorzystując macierz w ukladzie XYZ.
     
@@ -94,15 +95,18 @@ class Transformacje:
             Macierz ij w ukladzie neu
     
         '''
-        f, l, h = geo.xyz2plh(X, Y, Z)
-        phi = f*pi/180
-        lam = l*pi/180
-        dX = np.array([X,Y,Z])
-        R = np.array([[-sin(phi)*cos(lam), -sin(phi)*sin(lam), cos(phi)],
-                      [-sin(lam), cos(lam), 0],
-                      [cos(phi)*cos(lam), cos(phi)*sin(lam), sin(phi)]])
-        dx = R @ dX
-        return dx
+        phi, lam, _ = [radians(coord) for coord in self.xyz2plh(x0,y0,z0)]
+        
+        R = np.array([[-sin(lam), -sin(phi)*cos(lam), cos(phi)*cos(lam)],
+                      [cos(lam), -sin(phi)*sin(lam), cos(phi)*sin(lam)],
+                      [0, cos(phi), sin(phi)]])
+        xyz_t = np.array([[x -x0],
+                         [ y -y0],
+                         [ z -z0]])
+        [[E],[N],[U]] = R.T @ xyz_t
+        
+        return N, E, U
+        
 
     def pl21992(self, lat, lon):
         '''
@@ -142,94 +146,12 @@ class Transformacje:
         Y92 = ygk * m92 + 500000
         return X92, Y92
     
-if __name__ == "__main__":
-    # utworzenie obiektu
-    geo = Transformacje(model = "wgs84")
-    # dane XYZ geocentryczne
-    X = 3664940.500; Y = 1409153.590; Z = 5009571.170
-    phi, lam, h = geo.xyz2plh(X, Y, Z)
-    print(phi, lam, h)
-    # phi, lam, h = geo.xyz2plh2(X, Y, Z)
-    # print(phi, lam, h)
-        
- #na lekcji   
-    def xyz2neu(self, x,y,z,x0,y0,z0):
-        phi, lam, _ = [radians(coord) for coord in self.xyz2plh(x0,y0,z0)]
-        
-        R = np.array([[-sin(lam), -sin(phi)*cos(lam), cos(phi)*cos(lam)],
-                      [cos(lam), -sin(phi)*sin(lam), cos(phi)*sin(lam)],
-                      [0, cos(phi), sin(phi)]])
-        xyz_t = np.array([[x -x0],
-                         [ y -y0],
-                         [ z -z0]])
-        [[E],[N],[U]] = R.T @ xyz_t
-        
-        return N, E, U
-    
-    x,y,z = 1, 1, 5009571.170
-    x0, y0,z0 = 1, 1, 5009571.170   
-    enu = geo.xyz2neu(x,y,z,x0,y0,z0)
-    print('enu=', enu)
-    
-    elif '--xyz2neu' in sys.argv:
-        coords_neu = []
-        with open(inp_file_path) as f:
-            lines - f.readlines()
-            lines = lines[4:]
-            for line in lines:
-                line = line.strip()
-                x,y,z = line.split(',')
-                x,y,z = (float(x), float(y), float(z))
-                x0,y0,z0 = [float(coord) for coord in sys.argv[-4:-1]
-                n,e,u = geo.xyz2neu(x,y,z,x0,y0,z0)
-                coords_neu.append([n,e,u])
-                
-                
-        with open('result_xyz2neu.txt', 'w') as f:
-            f.write('x[m], y[m], z[m]\n')
-            for coords in coords_xyz:
-                line = ','.join([f'{coord:11.3f}' for coord in coords])
-                f.write(line + '\n')
-                
-#z poprzedniej lekcji
-        with open('result_xyz2plh.txt', 'w') as f:
-            for coords in coords_plh:
-                line = ','.join([str(coord) for coord in coords])
-                f.write(line + '\n')
-                
-        coords_plh = []
-        with open(wsp_inp.txt) as f:
-            lines = f.readlines()
-            lines = lines[4:]
-            for line in lines:
-                line = line.strip()
-                x_str ,y_str ,z_str = line.split(',')
-                x,y,z = (float(x_str), float(y_str), float(z_str))
-                p,l,h =geo.xyz2plh(x,y,z)
                
                 
         if '--header_lines' in sys.argv:
             header_lines = int(sys.argv)
             
-        elif '--xyz2plh' in sys.argv:
-            coords_plh = []
-            with open('wsp_inp.txt','r') as f:
-                lines = f.readlines()
-                lines = lines[4:]
-                for line in lines:
-                    line = line.strip()
-                    x_str, y_str, z_str = line.split(',')
-                    x,y,z = (float(x_str), float(y_str), float(z_str))
-                    phi, lam,h  = geo.xyz2plh(x,y,z)
-                    coords_plh.append([phi, lam ,h])
-                    
-                    
-            with open('result_xyz2plh.txt', 'w') as f:
-                f.write('phi[stopnie], lam[stopnie], h[m]\n')
-                for coords in coords_plh:
-                    line = ','.join([f'{coord:11.3f}' for coord in coords])
-                    f.write(line + '\n')
-                    
+
         elif '--xyz2plh' in sys.argv:
             coords_plh = []
             with open('wsp_inp.txt','r') as f:
@@ -251,7 +173,7 @@ if __name__ == "__main__":
         
         elif '--xyz2neu' in sys.argv:
             coords_neu = []
-            with open(inp_file_path,'r') as f:
+            with open('wsp_inp.txt','r') as f:
                 lines = f.readlines()
                 lines = lines[4:]
                 for line in lines:
@@ -272,7 +194,7 @@ if __name__ == "__main__":
                 
         elif '--pl21992' in sys.argv:
             coords_pl1992 = []
-            with open(inp_file_path,'r') as f:
+            with open('wsp_inp.txt','r') as f:
                 lines - f.readlines()
                 lines = lines[4:]
                 for line in lines:
@@ -288,4 +210,14 @@ if __name__ == "__main__":
                 for coords in coords_pl1992:
                     line = ','.join([f'{coord:11.3f}' for coord in coords])
                     f.write(line + '\n')
-                
+
+if __name__ == "__main__":
+    # utworzenie obiektu
+    geo = Transformacje(model = "wgs84")
+    # dane XYZ geocentryczne
+    X = 3664940.500; Y = 1409153.590; Z = 5009571.170
+    phi, lam, h = geo.xyz2plh(X, Y, Z)
+    print(phi, lam, h)
+    # phi, lam, h = geo.xyz2plh2(X, Y, Z)
+    # print(phi, lam, h)
+        
