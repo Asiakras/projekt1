@@ -58,7 +58,7 @@ Celem zadania jest utworzenie skryptu jako klasy, który będzie wykonywał tran
 	\item fi, lam -> 1992
 \end{itemize}
 \subsection{Wykorzystane narzędzia}
-Do napisania programu zostały wykorzystane:
+Do napisania programu przez obu twórców zostały wykorzystane:
 \begin{itemize}
 	\item Python 3.11
 	\item Spyder 
@@ -71,7 +71,18 @@ Krokiem rozpoczynającym nasze działania było zdefiniowanie klasy 'Transformac
 Następnie przy pomocy \verb|def __init__():|, tworzymy  obiekty klasy Transformacje. Zawierają one informacje o parametrach elipsoidy: a- wielka półoś elipsoidy oraz e2 - mimośród elipsoidy. 
 \vspace{0.5 cm}
 
-Następnym krokiem było zaimplementowanie klauzuli \textit{if name == main}, która wykorzystywała "sys.argv". Biblioteka ta umożliwia użytkownikowi przekazywanie argumentów przez wiersz poleceń. Nleży tam podać plik(z którego zostaną wyciągnięte dane), elipsoidę(jedną z opisanych elipsoid), transformacje(jedna z tych opisanych w klasie). Jeśli poda się nieistniejącą transformacje dostaniemy powiadomienie: "Transformation function not recognized."
+Następnym krokiem było zaimplementowanie klauzuli \textit{if name == main}, która wykorzystywała "sys.argv". Biblioteka ta umożliwia użytkownikowi przekazywanie argumentów przez wiersz poleceń. Nleży tam podać plik(z którego zostaną wyciągnięte dane), elipsoidę(jedną z opisanych elipsoid), transformacje(jedna z tych opisanych w klasie).
+\vspace{0.5 cm}
+
+Po zaimplementowaniu wszytkich transformacji i klauzul, kolejnym etapem było stworzenie plików z przelicoznymi danymi za pomocą komend \verb|open|, \verb|readlines| i \verb|write|.\newline
+Końcowym krokiem było uwzględnienie kilku komend i odpowiedzi gdyby użytkownik porgramu nie zaznajmoił się wcześniej z plikiem README.txt. Poniżej przedstawiono kilka przykładów:
+\begin{itemize}
+	
+	\item Jeśli poda się nieistniejącą transformacje dostaniemy powiadomienie: "Transformation function not recognized."
+	\item Jeśli poda się dwie sprzeczne ze sobą transformacje to dosatniemy powiadomienie; "Only one flag can be added."
+	\item Jeśli poda się model nieuwzględniony w programie to pojawi się wiadomość: "Given model is not supported."
+\end{itemize}
+
 \section{Podsumowanie, wnioski}
 \subsection{Link do repozytorium GitHub}
 \href{https://github.com/Asiakras/projekt1}{https://github.com/Asiakras/projekt1}
@@ -89,6 +100,8 @@ Pierwszym problemem było skorzystanie z sys.argv, gdyż jest to nowa zmienna i 
 SystemExit: 1"
 \newline
 Dopiero później zorientowaliśmy się, że w Spyderze nie będziemy mogli skorzystać z tego polecenia(przez sys.argv), ale w wierszu poleceń wszystko jest sprawne. 
+\newline
+Użycie i stworzenie komendy \verb|header_lines| wywołało delikatne zamieszanie, ponieważ tworzenie funkcji transformacji i ich flag było podzielone miedzy nami. Samą klauzulę wprowadzono praktycznie pod koniec pisania flag powodując różnicę między kodami twórców.
 
 \section{Bibliografia}
 Materiały zajęciowe z ćwiczeń Geodezja Wyższa sem.3 oraz materiały zajęciowe z ćwiczeń Informatyka sem. 4
