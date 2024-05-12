@@ -223,8 +223,6 @@ class Transformacje:
         return X92, Y92
 
 
-#####definicje transformacji z pliku GW - trzeba będzie je zmienić pod selfy by wpisywały się w model
-
 if __name__ == "__main__":
     # Checking for command-line arguments
     if len(sys.argv) <6:
@@ -267,7 +265,7 @@ if __name__ == "__main__":
                 line = ','.join([f'{coord:11.3f}' for coord in coords])
                 f.write(line + '\n')
 
-    if transformation_function == 'plh2xyz':
+    elif transformation_function == 'plh2xyz':
         coords_xyz = []
         with open(input_file, 'r') as f:
             lines = f.readlines()
@@ -309,7 +307,7 @@ if __name__ == "__main__":
         coords_neu = []
         with open(input_file, 'r') as f:
             lines = f.readlines()
-            lines = lines[4:]
+            lines = lines[header_lines:]
             for line in lines:
                 line = line.strip()
                 x, y, z = line.split(',')
@@ -328,7 +326,7 @@ if __name__ == "__main__":
         coords_pl1992 = []
         with open(input_file, 'r') as f:
             lines = f.readlines()
-            lines = lines[4:]
+            lines = lines[header_lines:]
             for line in lines:
                 line = line.strip()
                 phi_str, lam_str, h_str = line.split(',')
