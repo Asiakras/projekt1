@@ -1,0 +1,96 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage[polish]{babel}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath, amsfonts, amssymb}
+\usepackage{booktabs}
+\usepackage[top=2.5cm, bottom=2.5cm, left=2cm, right=2cm]{geometry}
+\usepackage{textcomp}
+\usepackage{gensymb}
+\usepackage{textgreek}
+\usepackage{geometry}
+\usepackage{pdflscape}
+\usepackage{pdfpages}
+\usepackage{xcolor}
+\usepackage{hyperref}
+
+\newcommand{\authorName}{Joanna Krasnodębska, Kuba Kropielnicki \\ grupa 3a, Numer Indeksu: 325777, 325778}
+\newcommand{\titeReport}{Transformacje współrzędnych} % <<< here insert short title in the food
+\newcommand{\titleLecture}{Informatyka Geodezyjna II \\ sem. 5, ćwiczenia, rok akad. 2023-2024}
+\newcommand{\kind}{report}
+\newcommand{\faculty}{Wydział Geodezji i Kartografii}
+\newcommand{\university}{Politechnika Warszawska}
+\newcommand{\city}{Warszawa}
+\newcommand{\thisyear}{2024}
+
+\pdfinfo
+{
+	/Title       (GIK PW)
+	/Creator     (TeX)
+	/Author      (Imię Nazwisko)
+}
+
+\begin{document}
+	\begin{center} 
+		\rule{\textwidth}{.5pt} \\
+		\vspace{1.0cm}
+		\Large \textsc{\titeReport}
+		\vspace{0.5cm} \\  
+		\large \textsc{\titleLecture}
+		\vspace{0.5cm}\\
+		\textsc{\faculty}, \textsc{\university}  \\ 
+		\city, \today
+	\end{center}
+
+\tableofcontents
+\newpage
+\section{Wstęp}
+\subsection{Cel ćwiczenia}
+Celem zadania jest utworzenie skryptu jako klasy, który będzie wykonywał transformacje:
+\begin{itemize}
+
+	\item XYZ -> fi, lam, h
+	\item fi, lam, h -> XYZ
+	\item XYZ -> NEU
+	\item fi, lam -> 2000
+	\item fi, lam -> 1992
+\end{itemize}
+\subsection{Wykorzystane narzędzia}
+Do napisania programu zostały wykorzystane:
+\begin{itemize}
+	\item Python 3.11
+	\item Spyder 
+	\item System operacyjny: Microsoft Windows 10
+\end{itemize}
+\section{Etapy rozwiązywania}
+Krokiem rozpoczynającym nasze działania było zdefiniowanie klasy 'Transformacje'. Następnie do klasy dodaliśmy algorytmy, pozwalające wykonać transformacje podane w punkcie 1.1. Algorytmy te zostały oparte na funkcjach z ćwiczeń Geodezji Wyższej  semestru 3.
+\vspace{0.5 cm}
+
+Następnie przy pomocy \verb|def __init__():|, tworzymy  obiekty klasy Transformacje. Zawierają one informacje o parametrach elipsoidy: a- wielka półoś elipsoidy oraz e2 - mimośród elipsoidy. 
+\vspace{0.5 cm}
+
+Następnym krokiem było zaimplementowanie klauzuli \textit{if name == main}, która wykorzystywała "sys.argv". Biblioteka ta umożliwia użytkownikowi przekazywanie argumentów przez wiersz poleceń. Nleży tam podać plik(z którego zostaną wyciągnięte dane), elipsoidę(jedną z opisanych elipsoid), transformacje(jedna z tych opisanych w klasie). Jeśli poda się nieistniejącą transformacje dostaniemy powiadomienie: "Transformation function not recognized."
+\section{Podsumowanie, wnioski}
+\subsection{Link do repozytorium GitHub}
+\href{https://github.com/Asiakras/projekt1}{https://github.com/Asiakras/projekt1}
+
+\subsection{Umiejętności nabyte w trakcie rozwiązywania projektu}
+\begin{itemize}
+	\item Zapoznanie się z obsługą GitHub, gdzie możemy w grupie pracować na jednym pliku i zapisywać zmiany widoczne dla wszytkich
+	\item Zapoznanie się ze zmienną sys.argv oraz jej zastosowaniem
+	\item Tworzenie dokumentów w latex
+\end{itemize}
+\subsection{Spostrzeżenia i trudności napotkane w trakcie ćwiczenia}
+Pierwszym problemem było skorzystanie z sys.argv, gdyż jest to nowa zmienna i musieliśmy się chwilę dłużej zastanowić jak ona działa i jak skutecznie jej użyć w tym konkretnym ćwiczeniu. Dłuższą chwilę zastanawialiśmy się czemu kod, który wydawał sie poprawny wyrzuca bład: "An exception has occurred, use
+ \verb|%tb|  to see the full traceback.
+\newline
+SystemExit: 1"
+\newline
+Dopiero później zorientowaliśmy się, że w Spyderze nie będziemy mogli skorzystać z tego polecenia(przez sys.argv), ale w wierszu poleceń wszystko jest sprawne. 
+
+\section{Bibliografia}
+Materiały zajęciowe z ćwiczeń Geodezja Wyższa sem.3 oraz materiały zajęciowe z ćwiczeń Informatyka sem. 4
+
+\end{document}
