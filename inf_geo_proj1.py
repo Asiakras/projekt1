@@ -226,7 +226,7 @@ class Transformacje:
 if __name__ == "__main__":
     # Checking for command-line arguments
     if len(sys.argv) <6:
-        print(" <input_file> <header_lines> <ellipsoid_model> <transformation_function>")
+        print(" <input_file> <header_lines> <number_of_lines> <ellipsoid_model> <transformation_function>")
         sys.exit(1)
 
     input_file = sys.argv[1] 
@@ -234,14 +234,14 @@ if __name__ == "__main__":
         header_lines = int(sys.argv[3])
         modele_w_obsludze = ["wgs84", "grs80", "mars"]
         if sys.argv[4] not in modele_w_obsludze:
-             print("Model nie jest obsługiwany.") 
+             print("Given model is not supported.") 
         else:
             ellipsoid_model = sys.argv[4]
             transformation_function = sys.argv[5]
 
 
     if 'xyz2plh' in sys.argv and 'plh2xyz' in sys.argv:
-        print('możesz podać tylko jedną flagę')
+        print("Only one flag can be added.")
         
     # Creating Transformacje object
     geo = Transformacje(model=ellipsoid_model)
@@ -294,7 +294,7 @@ if __name__ == "__main__":
                 phi, lam, h = (float(phi_str), float(lam_str), float(h_str))
                 f2000, l2000 = geo.pl2000(phi, lam)
                 if lam < np.deg2rad(13.5) and lam > np.deg2rad(25.5):
-                    print("Punkt poza strefami odwzorowawczymi układu PL-2000")  
+                    print("A point is outside the PL-2000 structure mapping zones")  
                 coords_pl2000.append([f2000, l2000])
 
         with open('result_pl1992z.txt', 'w') as f:
