@@ -6,7 +6,6 @@ Program służy do przeprowadzania transformacji geodezyjnych pomiędzy różnym
 - Transformacja współrzędnych geodezyjnych (BL) na współrzędne PL-2000 - funkcja pl2000.
 - Transformacja współrzędnych XYZ na współrzędne NEU - funkcja xyz2neu.
 - Transformacja współrzędnych geodezyjnych (BL) na współrzędne PL-1992 - funkcja pl1992.
-- !!!UWAGA!!! Model "mars" nie jest obsługieany dla transformacji PL-2000 i PL-1992 gdyż transformacja z modelu eplisoidy Marsa na elipsoidę Polski jest nielogiczna 
 
 Wymagania systemowe:
 Aby program działał poprawnie, wymagane są:
@@ -70,6 +69,9 @@ KOD : python program.py input_blh.txt header_lines liczba wgs84 pl1992
 - pl1992: flaga informująca o wybraniu funkcji transformacji z BLH na PL-1992.
 
 Wyniki zostaną zapisane do pliku result_pl1992.txt.
+
+## Uwagi:
+- Model "mars" nie jest obsługiwany dla transformacji PL-2000 i PL-1992 gdyż transformacja z modelu eplisoidy Marsa na elipsoidę Polski nie ma sensu. Wpisane w obu transformacjach modelu "mars" spowoduje, że wyskoczy inforamcja o braku obsługi danego modelu.
 
 ## Znane problemy:
 - Obsługiwane są tylko 3 modele elipsoid więc wpisujac jakikolwiek inny model wyskoczy powiadomienie o tym że podany model nie jest obsługiwany oraz wyskakuje też powiadomienie 
