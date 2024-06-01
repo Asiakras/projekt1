@@ -66,11 +66,11 @@ class Transformacje:
             if np.abs(fs - lat)< (0.000001/206265):
                 break
         if output == "dec_degree":
-            return round(degrees(lat), 5), round(degrees(lon), 5), round(h, 3)
+            return round(degrees(lat), 9), round(degrees(lon), 9), round(h, 3)
         elif output == "dms":
             lat = self.deg2dms(degrees(lat))
             lon = self.deg2dms(degrees(lon))
-            return f"{lat[0]:05d}:{lat[1]:05d}:{lat[2]:.5f}", f"{lon[0]:05d}:{lon[1]:05d}:{lon[2]:.5f}", f"{h:.3f}"
+            return f"{lat[0]:09d}:{lat[1]:09d}:{lat[2]:.9f}", f"{lon[0]:09d}:{lon[1]:09d}:{lon[2]:.9f}", f"{h:.3f}"
         else:
             raise NotImplementedError(f"{output} - output format not defined")
 
@@ -274,7 +274,7 @@ if __name__ == "__main__":
             f.write('phi[stopnie], lam[stopnie], h[m]\n')
             for coords in coords_plh:
                 phi, lam, h = coords
-                line = f'{phi:.5f}, {lam:.5f}, {h:.3f}'
+                line = f'{phi:.9f}, {lam:.9f}, {h:.3f}'
                 f.write(line + '\n')
 
     elif transformation_function == 'plh2xyz':
@@ -309,7 +309,7 @@ if __name__ == "__main__":
                     print("A point is outside the PL-2000 structure mapping zones")  
                 coords_pl2000.append([f2000, l2000])
 
-        with open('result_pl200z.txt', 'w') as f:
+        with open('result_pl2000.txt', 'w') as f:
             f.write('x2000[m], y2000[m]\n')
             for coords in coords_pl2000:
                 line = ','.join([f'{coord:11.3f}' for coord in coords])
