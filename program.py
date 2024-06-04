@@ -81,7 +81,7 @@ class Transformacje:
         return d, m, s
             
 
-    def plh2xyz(self, phi, lam, h):
+    def plh2xyz(self, lat, lon, h):
         """
         Transformajca odwrotna do transformacji Hirvonena. Funkcja przyjmuje współrzędne geodezyjne długość szerokość i wysokośc elipsoidalna (phi, lam, h) i zwraca 
         wyniki we współrzędnych ortokartezjańskich (x, y, z)
@@ -99,13 +99,12 @@ class Transformacje:
         X, Y, Z : FLOAT
              współrzędne w układzie orto-kartezjańskim,
         """
-        
-        Rn = self.a / sqrt(1 - self.ecc2 * sin(phi)**2)
-        q = Rn * self.ecc2 * sin(phi)
-        X = (Rn + h) * cos(phi) * cos(lam)
-        Y = (Rn + h) * cos(phi) * sin(lam)
-        Z = (Rn + h) * sin(phi) - q
-        
+        phi = lat*pi/180
+        lam = lon*pi/180
+        N = self.a / np.sqrt((1 - self.ecc2 * np.sin(phi)**2))
+        X = (N + h) * np.cos(phi) * np.cos(lam)
+        Y = (N + h) * np.cos(phi) * np.sin(lam)
+        Z = ((N * (1 - self.ecc2)) + h) * np.sin(phi) 
         return X, Y, Z
     
     def pl2000(self, lat, lon):
